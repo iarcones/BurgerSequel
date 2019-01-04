@@ -1,0 +1,158 @@
+{{!-- my code here --}}
+
+
+<div class="container mt-3">
+    <div class="row">
+        <div class="col">
+            <h1 class="text-center pt-5 pb-3">Burger The Cast Arrays</h1>
+
+            <h2 class="text-center pt-3 pb-3">Order your burger 🍔🍟🍔🍟, eat your burger, gain some pounds</h2>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <h2 class="text-center pt-3 pb-3 mt-2 mb-3 backcol">add a new burger</h2>
+            <form class="create-form form-inline  mb-4 justify-content-center addburgers">
+                <div class="form-group">
+                    <label class="mr-2" for="addburger">Burger Name:</label>
+                    <input type="text" class="form-control-sm" id="addburger" name="name">
+                </div>
+                <button class="btn btn-success btn-sm ml-3" type="submit">add Burger</button>
+            </form>
+        </div>
+
+        <div class="col">
+            <h2 class="text-center pt-3 pb-3 mt-2 mb-3 backcol">client</h2>
+            <form class="create-form form-inline  mb-4 justify-content-center register areaclient">
+                <div class="form-group">
+                    <label class="mr-2" for="addcustomer">Customer Name:</label>
+                    <input type="text" class="form-control-sm" id="addcustomer" name="name">
+                </div>
+                <button class="btn btn-success btn-sm ml-3" type="submit">register/login</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="row pt-2 pb-5">
+        <div class="col">
+            <h2 class="text-center pt-3 pb-3 mb-4 backcol">Burgers!</h2>
+            <ul class="pl-5">
+                {{#each burgers}}
+                {{#unless devoured}}
+                <li>
+                    <div class="row pb-2">
+                        <div class="col-9">
+                            {{burger_name}}
+                        </div>
+                        <div class="col-3">
+                            <button class="devour btn btn-warning btn-sm" data-id="{{this.id}}">Devour it!</button>
+                        </div>
+                    </div>
+                </li>
+                {{/unless}}
+                {{/each}}
+            </ul>
+        </div>
+
+        <div class="col">
+            <h2 class="text-center pt-3 pb-3  mb-4 backcol">Burgers devoured!</h2>
+            <ul class="pl-5">
+                {{#each burgers}}
+                {{#if devoured}}
+                <li>
+                    <div class="row pb-2">
+                        <div class="col">
+                            {{burger_name}}
+                        </div>
+                    </div>
+                </li>
+                {{/if}}
+                {{/each}}
+            </ul>
+        </div>
+    </div>
+
+
+</div>
+
+
+<script>
+    // Make sure we wait to attach our handlers until the DOM is fully loaded.
+    $(function () {
+
+       
+
+        $(".addburgers").on("submit", function (event) {
+            // Make sure to preventDefault on a submit event.
+            event.preventDefault();
+
+            var newBurger = {
+                name: $("#addburger").val().trim(),
+            };
+
+            // Send the POST request.
+            $.ajax("/api/burgers", {
+                type: "POST",
+                data: newBurger
+            }).then(
+                function () {
+                    console.log("created new burger");
+                    // Reload the page to get the updated list
+                    location.reload();
+                }
+            );
+        });
+
+
+        $(".devour").on("click", function (event) {
+            console.log("estoy en el onclick del boton ")
+            var id = $(this).data("id");
+            console.log("devour, id: ", id)
+
+            // Send the PUT request.
+            $.ajax("/api/burgers/" + id, {
+                type: "PUT",
+                data: true
+            }).then(
+                function () {
+                    console.log("changed to devoured");
+                    // Reload the page to get the updated list
+                    location.reload();
+                }
+            );
+        });
+
+
+        $(".register").on("submit", function (event) {
+            // Make sure to preventDefault on a submit event.
+            event.preventDefault();
+
+            // get the user local storage to show the column of user burgers and button to reorder
+            // Getting the value from the localStorage
+            customerName = $("#addcustomer").val().trim();
+            var newCustomer = {
+                name: customerName,
+            };
+
+            localStorage.setItem("customersburger", [customerName]);
+
+            // activate the devour buttoms and show any previous burger the customer devour and reorder butoms
+
+
+
+            // Send the POST request.
+            $.ajax("/api/customers", {
+                type: "POST",
+                data: newCustomer
+            }).then(
+                function () {
+                    console.log("created new customer");
+                    // Reload the page to get the updated list
+                    location.reload();
+                }
+            );
+        });
+    });
+
+</script>
