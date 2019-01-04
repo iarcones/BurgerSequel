@@ -80,8 +80,15 @@
 <script>
     // Make sure we wait to attach our handlers until the DOM is fully loaded.
     $(function () {
-
-       
+        if (localStorage.getItem("customersburger") === null) {
+            /// disable devour buttoms 
+          console.log("customer new");
+        }
+        else {
+            var customerName = localStorage.getItem("customersburger");
+            $(".areaclient").empty();
+            $(".areaclient").append("<h3>welcome back " + customerName + "</h3>");
+        }
 
         $(".addburgers").on("submit", function (event) {
             // Make sure to preventDefault on a submit event.
@@ -138,7 +145,6 @@
             localStorage.setItem("customersburger", [customerName]);
 
             // activate the devour buttoms and show any previous burger the customer devour and reorder butoms
-
 
 
             // Send the POST request.
