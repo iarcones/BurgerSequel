@@ -1,11 +1,15 @@
 
 console.log("burger model");
 module.exports = (sequelize, DataTypes) => {
-  const Burger = sequelize.define("burgers", {
+  const Burger = sequelize.define("Burger", {
     burger_name: DataTypes.STRING,
-    devoured: { type: DataTypes.BOOLEAN, defaultValue: false }
+    burger_counter: { type: DataTypes.INTEGER, defaultValue: 0 }
   });
   Burger.associate = function(models) {
+    
+      console.log("inside burger associate")
+      Burger.hasMany(models.Customerburger);
+    
     // associations can be defined here
   };
   // Syncs with DB
