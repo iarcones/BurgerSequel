@@ -9,6 +9,8 @@ var db = require("../models");
 router.get("/", function (req, res) {
     // get the user local storage to show the column of user burgers and button to reorder
     
+    // var customerName = localStorage.getItem("customersburger");
+
     db.burgers.findAll({}).then(function (dbBurger) {
         var hbsObject = {
             burgers: dbBurger
@@ -65,11 +67,12 @@ router.put("/api/burgers/:id", function (req, res) {
 
 router.post("/api/customers", function (req, res) {
     console.log("creating: ", req.body.name);
-    db.customers.create({
+    db.Customer.create({
         customer_name: req.body.name,
     })
         .then(function (dbCustomer) {
-            res.json(dbCustomer);
+            console.log(dbCustomer)
+            // res.json(dbCustomer);
         });
 });
 
