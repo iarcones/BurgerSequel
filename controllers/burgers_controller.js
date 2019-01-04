@@ -12,12 +12,24 @@ router.get("/", function (req, res) {
     // var customerName = localStorage.getItem("customersburger");
 
     db.burgers.findAll({}).then(function (dbBurger) {
-        var hbsObject = {
-            burgers: dbBurger
-        };
-        console.log(hbsObject);
-        res.render("index", hbsObject);
+        db.Customerburger.findAll({
+            where: {
+                CustomerId: customerId,
+            }
+        }).then(function (dbBurgerCustomer) {
+
+            var hbsObject = {
+                burgers: dbBurger,
+                burgerscustomer: dbBurgerCustomer
+            };
+            console.log(hbsObject);
+            res.render("index", hbsObject);
+         
+        });
+      
     });
+
+
     //var customerName = localStorage.getItem("customersburger");
     // db.burgers.findAll({}).then(function (dbBurger) {
     //     var hbsObject = {
@@ -49,19 +61,17 @@ router.post("/api/burgers", function (req, res) {
 });
 
 
-router.put("/api/burgers/:id", function (req, res) {
+router.put("/api/devoured/:id/:customerId", function (req, res) {
+    console.log("devoured: ", req)
     
-    db.burgers.update(
+    db.Customerburger.create(
         {
-            devoured: true
-        },
-        {
-          where: {
-            id: req.params.id
-          }
+            burger_id: req.params.id,
+            CustomerId: req.params.customerId
         })
-        .then(function(dbBurger) {
-          res.json(dbBurger);
+        .then(function(dbcustomerburger) {
+            console.log(dbcustomerburger)
+          //res.json(dbcustomerburger);
         });
 });
 
@@ -72,7 +82,7 @@ router.post("/api/customers", function (req, res) {
     })
         .then(function (dbCustomer) {
             console.log(dbCustomer)
-            // res.json(dbCustomer);
+            res.json(dbCustomer);
         });
 });
 

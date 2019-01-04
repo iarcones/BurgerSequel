@@ -58,12 +58,14 @@
         <div class="col">
             <h2 class="text-center pt-3 pb-3  mb-4 backcol">Burgers devoured!</h2>
             <ul class="pl-5">
-                {{#each burgers}}
-                {{#if devoured}}
+                {{#each burgerscustomer}}
                 <li>
                     <div class="row pb-2">
                         <div class="col">
-                            {{burger_name}}
+                            {{burger_id}}
+                        </div>
+                        <div class="col-3">
+                            <button class="reorder btn btn-warning btn-sm" data-id="{{this.burger_id}}">Reorder!</button>
                         </div>
                     </div>
                 </li>
@@ -80,19 +82,27 @@
 <script>
     // Make sure we wait to attach our handlers until the DOM is fully loaded.
     $(function () {
+
+        var customerName = "";
+        var customerId = 0;
         if (localStorage.getItem("customersburger") === null) {
             /// disable devour buttoms 
           console.log("customer new");
         }
         else {
-            var customerName = localStorage.getItem("customersburger");
+
+            arrayCustomer = localStorage.getItem("customersburger").split(",");
+            customerName = arrayCustomer[1];
+            customerId = arrayCustomer[0];
             $(".areaclient").empty();
             $(".areaclient").append("<h3>welcome back " + customerName + "</h3>");
+
         }
 
         $(".addburgers").on("submit", function (event) {
             // Make sure to preventDefault on a submit event.
             event.preventDefault();
+
 
             var newBurger = {
                 name: $("#addburger").val().trim(),
@@ -115,10 +125,10 @@
         $(".devour").on("click", function (event) {
             console.log("estoy en el onclick del boton ")
             var id = $(this).data("id");
-            console.log("devour, id: ", id)
+            console.log("devour, id: ", id, customerId)
 
             // Send the PUT request.
-            $.ajax("/api/burgers/" + id, {
+            $.ajax("/api/devoured/" + id + "/" + customerId, {
                 type: "PUT",
                 data: true
             }).then(
@@ -129,7 +139,6 @@
                 }
             );
         });
-
 
         $(".register").on("submit", function (event) {
             // Make sure to preventDefault on a submit event.
@@ -142,8 +151,6 @@
                 name: customerName,
             };
 
-            localStorage.setItem("customersburger", [customerName]);
-
             // activate the devour buttoms and show any previous burger the customer devour and reorder butoms
 
 
@@ -152,13 +159,85 @@
                 type: "POST",
                 data: newCustomer
             }).then(
-                function () {
+                function(data) {
                     console.log("created new customer");
+                    console.log(data);
                     // Reload the page to get the updated list
+                    localStorage.setItem("customersburger", [data.id, data.customer_name]);
                     location.reload();
                 }
             );
         });
     });
-
+    // NOTE: In order to modify cookies, we must access them over a secure connection e.i = https, localhost:.
+    // Needed to create this function to readCookies. Essentially it splits up the cookie list
+    // See the working app at http://cookie-example-rcb.herokuapp.com/ or by opening with Firefox or Safari
+    function readCookie(name) {
+      var nameEQ = name + "=";
+      var ca = document.cookie.split(";");
+      for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) === " ") c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) === 0) {
+          return c.substring(nameEQ.length, c.length);
+        }
+      }
+      return null;
+    }
 </script>
+
+
+
+    // Capture Button Click
+    $("#add-user").on("click", function(event) {
+      event.preventDefault();
+
+      // Capture User Inputs and store into variables
+      var name = $("#name-input").val().trim();
+      var email = $("#email-input").val().trim();
+      var age = $("#age-input").val().trim();
+      var comment = $("#comment-input").val().trim();
+
+      // Console log each of the user inputs to confirm we are receiving them
+      console.log(name);
+      console.log(email);
+      console.log(age);
+      console.log(comment);
+
+      // Output all of the new information into the relevant sections
+      $("#name-display").text(name);
+      $("#email-display").text(email);
+      $("#age-display").text(age);
+      $("#comment-display").text(comment);
+
+      // Clear the previous cookie by setting it it equal to nothing and its expiration date to a past time
+      document.cookie = "name=; expires=Thu, 07 Jan 1970 00:00:00 UTC";
+
+      // Store all of the parameters as part of the cookie string
+      document.cookie = "name=" + name;
+      document.cookie = "email=" + email;
+      document.cookie = "age=" + age;
+      document.cookie = "comment=" + comment;
+
+      // Print all the cookies
+      console.log(document.cookie);
+
+      // Recover the parameters by passing the cookie parameters of interest,
+      // through a function that breaks the document.cookie
+      var cookieName = readCookie("name");
+      var cookieEmail = readCookie("email");
+      var cookieAge = readCookie("age");
+      var cookieComment = readCookie("comment");
+
+      // Log all of the cookies to test
+      console.log(cookieName);
+      console.log(cookieEmail);
+      console.log(cookieAge);
+      console.log(cookieComment);
+    });
+
+    // By default display the content from the cookieString
+    $("#name-display").text(readCookie("name"));
+    $("#email-display").text(readCookie("email"));
+    $("#age-display").text(readCookie("age"));
+    $("#comment-display").text(readCookie("comment"));

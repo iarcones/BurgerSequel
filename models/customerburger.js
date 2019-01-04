@@ -3,7 +3,7 @@ console.log("customerburgers model");
 module.exports = (sequelize, DataTypes) => {
   const Customerburger = sequelize.define("Customerburger", {
     burger_id: DataTypes.INTEGER,
-    devoured: { type: DataTypes.BOOLEAN, defaultValue: false }
+    devoured: { type: DataTypes.BOOLEAN, defaultValue: true }
   });
   Customerburger.associate = function(models) {
     // associations can be defined here
