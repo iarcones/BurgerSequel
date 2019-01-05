@@ -41,8 +41,14 @@
                 {{#each burgers}}
                 <li>
                     <div class="row pb-2">
-                        <div class="col-9">
+                        <div class="col-4">
                             {{burger_name}}
+                        </div>
+                         <div class="col-4">
+                            <p class="text-right text-success">Ordered: </p>
+                        </div>
+                         <div class="col-1">
+                            {{burger_counter}}
                         </div>
                         <div class="col-3">
                             <button class="devour btn btn-warning btn-sm" data-id="{{this.id}}">Devour it!</button>
@@ -60,11 +66,17 @@
                 {{#each burgerscustomer}}
                 <li>
                     <div class="row pb-2">
-                        <div class="col">
-                            {{BurgerId}}
+                        <div class="col-4">
+                            {{Burger.burger_name}}
+                        </div>
+                         <div class="col-4">
+                            <p class="text-right text-success">Devoured: </p>
+                        </div>
+                         <div class="col-1">
+                            {{counter}}
                         </div>
                         <div class="col-3">
-                            <button class="reorder btn btn-warning btn-sm" data-id="{{this.burger_id}}">Reorder!</button>
+                            <button class="devour btn btn-warning btn-sm" data-id="{{this.BurgerId}}">Reorder!</button>
                         </div>
                     </div>
                 </li>
@@ -136,6 +148,7 @@
                     console.log("changed to devoured");
                     // Reload the page to get the updated list
                     location.reload();
+                
                 }
             );
         });
@@ -144,14 +157,13 @@
             // Make sure to preventDefault on a submit event.
             event.preventDefault();
 
-            // get the user local storage to show the column of user burgers and button to reorder
+
             // Getting the value from the localStorage
             customerName = $("#addcustomer").val().trim();
             var newCustomer = {
                 name: customerName,
             };
 
-            // activate the devour buttoms and show any previous burger the customer devour and reorder butoms
 
             // Send the POST request.
             $.ajax("/api/customers", {
@@ -189,8 +201,6 @@
       }
       return null;
     }
-
-
 
     });
 

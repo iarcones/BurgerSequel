@@ -15,31 +15,24 @@ router.get("/", function (req, res) {
     var customerId = req.cookies.customerid;
     console.log("customerName: ", customerName);
 
-    // var customerId = readCookie("customerid");
-
-    db.Burger.findAll({}).then(function (dbBurger) {
+    db.Burger.findAll({
+        order: [
+            ['burger_counter', 'DESC']
+        ],
+    }).then(function (dbBurger) {
         var hbsObject = {
             burgers: dbBurger
         };
-        /////
-        // Books.findAll({
-        //     include : { //<------ By this you can use association
-        //         model : User ,
-        //         where : { id : YOUR_USER_ID }
-        //     },
-        //     where : { status : 'borrowed' }    
-        // }).then(books => {
-        //     if(books.length > 0) {
-        //         console.log(books);
-        //     } else {
-        //         console.log("No books found");
-        //     }
-        // })
 
         db.Customerburger.findAll({
+            include: [{ association: 'Burger' }
+            ],
             where: {
                 CustomerId: customerId,
-            }
+            },
+            order: [
+                ['counter', 'DESC']
+            ],
         }).then(function (dbBurgerCustomer) {
             hbsObject.burgerscustomer = dbBurgerCustomer;
             res.render("index", hbsObject);
@@ -71,7 +64,7 @@ router.put("/api/devoured/:id/:customerId", function (req, res) {
             console.log("data: ", data);
             console.log(data[0][1]);
             /// if rec doesn't exist create and counter = 1;
-            if (data[0][1] === (0)){
+            if (data[0][1] === (0)) {
                 console.log("data for creating: ", burger, client);
                 db.Customerburger.create(
                     {
@@ -83,7 +76,7 @@ router.put("/api/devoured/:id/:customerId", function (req, res) {
                         //res.json(dbcustomerburger);
                     });
             }
-            
+
         });
     });
 });
@@ -99,4 +92,4 @@ router.post("/api/customers", function (req, res) {
 });
 
 
-    module.exports = router;
+module.exports = router;
