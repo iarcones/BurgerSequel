@@ -2,8 +2,14 @@
 console.log("burger model");
 module.exports = (sequelize, DataTypes) => {
   const Burger = sequelize.define("Burger", {
-    burger_name: DataTypes.STRING,
-    burger_counter: { type: DataTypes.INTEGER, defaultValue: 0 }
+    burger_name: {
+      type: DataTypes.STRING,
+      validate: {len: [1]}
+    },
+    burger_counter: { 
+      type: DataTypes.INTEGER, 
+      defaultValue: 0
+    }
   });
   Burger.associate = function(models) {
     

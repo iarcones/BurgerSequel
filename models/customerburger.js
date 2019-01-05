@@ -2,8 +2,12 @@
 console.log("customerburgers model");
 module.exports = (sequelize, DataTypes) => {
   const Customerburger = sequelize.define("Customerburger", {
-    counter: { type: DataTypes.INTEGER, defaultValue: 0 }
+    counter: { 
+      type: DataTypes.INTEGER, 
+      defaultValue: 1 
+    }
   });
+
   Customerburger.associate = function(models) {
     // associations can be defined here
     console.log("inside customer burger associate customer")
@@ -14,6 +18,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     });
   };
+
   Customerburger.associate = function(models) {
     // associations can be defined here
     console.log("inside customer burger associate burger")

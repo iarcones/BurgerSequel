@@ -3,7 +3,10 @@ console.log("customer model");
 module.exports = (sequelize, DataTypes) => {
   
   const Customer = sequelize.define("Customer", {
-    customer_name: DataTypes.STRING,
+    customer_name:  {
+      type: DataTypes.STRING,
+      validate: {len: [1]}
+    },
   });
   Customer.associate = function(models) {
     console.log("inside customer  associate")

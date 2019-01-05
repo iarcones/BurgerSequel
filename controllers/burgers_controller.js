@@ -21,8 +21,20 @@ router.get("/", function (req, res) {
         var hbsObject = {
             burgers: dbBurger
         };
-        console.log("--------------");
-        console.log(hbsObject);
+        /////
+        // Books.findAll({
+        //     include : { //<------ By this you can use association
+        //         model : User ,
+        //         where : { id : YOUR_USER_ID }
+        //     },
+        //     where : { status : 'borrowed' }    
+        // }).then(books => {
+        //     if(books.length > 0) {
+        //         console.log(books);
+        //     } else {
+        //         console.log("No books found");
+        //     }
+        // })
 
         db.Customerburger.findAll({
             where: {
@@ -30,9 +42,6 @@ router.get("/", function (req, res) {
             }
         }).then(function (dbBurgerCustomer) {
             hbsObject.burgerscustomer = dbBurgerCustomer;
-            
-            console.log("--------------");
-            console.log(hbsObject);
             res.render("index", hbsObject);
         });
 
@@ -50,17 +59,33 @@ router.post("/api/burgers", function (req, res) {
 });
 
 router.put("/api/devoured/:id/:customerId", function (req, res) {
-    console.log("devoured: ", req)
+    burger = req.params.id;
+    client = req.params.customerId;
 
-    db.Customerburger.create(
-        {
-            BurgerId: req.params.id,
-            CustomerId: req.params.customerId
-        })
-        .then(function (dbcustomerburger) {
-            console.log(dbcustomerburger)
-            //res.json(dbcustomerburger);
+    db.Burger.increment('burger_counter', { where: { id: req.params.id } }).then(function (data) {
+        console.log("data when update the counter on burger")
+        console.log(data[0][1]);
+        console.log("data before creating: ", burger, client);
+        db.Customerburger.increment('counter', { where: { BurgerId: burger, CustomerId: client } }).then(function (data) {
+            console.log("inside function increment customerburger");
+            console.log("data: ", data);
+            console.log(data[0][1]);
+            /// if rec doesn't exist create and counter = 1;
+            if (data[0][1] === (0)){
+                console.log("data for creating: ", burger, client);
+                db.Customerburger.create(
+                    {
+                        BurgerId: burger,
+                        CustomerId: client
+                    })
+                    .then(function (dbcustomerburger) {
+                        console.log(dbcustomerburger)
+                        //res.json(dbcustomerburger);
+                    });
+            }
+            
         });
+    });
 });
 
 router.post("/api/customers", function (req, res) {
@@ -74,4 +99,4 @@ router.post("/api/customers", function (req, res) {
 });
 
 
-module.exports = router;
+    module.exports = router;
