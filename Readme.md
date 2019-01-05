@@ -2,7 +2,7 @@
 
 ## Overview
 
-In this project, I am using MySQL, Node, Express, Handlebars and a homemade ORM. It is deployed to Heroku.
+In this project, I am using MySQL, Node, Express, Handlebars, Sequelize. Deployed in Heroku.
 
 Try the app here: https://burgersequel2018.herokuapp.com/
 
@@ -22,15 +22,18 @@ Try the app here: https://burgersequel2018.herokuapp.com/
 - Nodejs
 - Express
 - Mysql
-- Handlebars
 - Sequelize
+- Handlebars
 
 ## Screenshots
 ![](demo.gif)
 
 ## Comments
 
-First app working with Express, Handlebars, ORM and first time configurating MySQL in Heroku.
+In this project was important:
+- to test sequelize using 3 tables, associates, order results, join, etc.
+- implement cookies with Express
+- integrate several sources with handlebar
 
 ## Author
 
