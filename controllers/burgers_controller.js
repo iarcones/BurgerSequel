@@ -56,7 +56,7 @@ router.put("/api/devoured/:id/:customerId", function (req, res) {
         if (client !== 'null') {
             console.log("client in the if: ", client)
             db.Customerburger.increment('counter', { where: { BurgerId: burger, CustomerId: client } }).then(function (data) {
-             
+
                 /// if rec doesn't exist create and counter = 1;
                 if (data[0][1] === (0)) {
                     db.Customerburger.create(
@@ -65,23 +65,27 @@ router.put("/api/devoured/:id/:customerId", function (req, res) {
                             CustomerId: client
                         })
                         .then(function (dbcustomerburger) {
-                            console.log(dbcustomerburger)
-                            //res.json(dbcustomerburger);
+                            res.json(dbcustomerburger);
                         });
                 }
-
+                else {
+                    res.json(data);
+                }
             });
         }
+        else {
+            res.json(data);
+        }
     });
-    res.json(data);
+
 });
 
 router.post("/api/customers", function (req, res) {
-  
+
     db.Customer.create({
         customer_name: req.body.name,
     }).then(function (dbCustomer) {
-       
+
         res.json(dbCustomer);
     });
 });
