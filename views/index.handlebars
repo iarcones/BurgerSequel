@@ -44,10 +44,10 @@
                         <div class="col-4">
                             {{burger_name}}
                         </div>
-                         <div class="col-4">
+                        <div class="col-4">
                             <p class="text-right text-success">Ordered: </p>
                         </div>
-                         <div class="col-1">
+                        <div class="col-1">
                             {{burger_counter}}
                         </div>
                         <div class="col-3">
@@ -69,10 +69,10 @@
                         <div class="col-4">
                             {{Burger.burger_name}}
                         </div>
-                         <div class="col-4">
+                        <div class="col-4">
                             <p class="text-right text-success">Devoured: </p>
                         </div>
-                         <div class="col-1">
+                        <div class="col-1">
                             {{counter}}
                         </div>
                         <div class="col-3">
@@ -96,15 +96,8 @@
         ////////
         var customerName = readCookie("customername");
         var customerId = readCookie("customerid");
-        console.log("datos from coockies");
-        console.log(customerName, customerId);
 
- 
-        if (customerId === null) {
-            /// disable devour buttoms 
-            console.log("customer new");
-        }
-        else {
+        if (customerId !== null) {
 
             $(".areaclient").empty();
             $(".areaclient").append("<h3>Hi " + customerName + ", how are you doing today?</h3>");
@@ -114,7 +107,6 @@
         $(".addburgers").on("submit", function (event) {
             // Make sure to preventDefault on a submit event.
             event.preventDefault();
-
 
             var newBurger = {
                 name: $("#addburger").val().trim(),
@@ -126,18 +118,15 @@
                 data: newBurger
             }).then(
                 function () {
-                    console.log("created new burger");
                     // Reload the page to get the updated list
                     location.reload();
                 }
             );
         });
 
-
         $(".devour").on("click", function (event) {
-          
+
             var id = $(this).data("id");
-            console.log("devour, id: ", id, customerId)
 
             // Send the PUT request.
             $.ajax("/api/devoured/" + id + "/" + customerId, {
@@ -145,10 +134,8 @@
                 data: true
             }).then(
                 function () {
-                    console.log("changed to devoured");
                     // Reload the page to get the updated list
                     location.reload();
-                
                 }
             );
         });
@@ -157,13 +144,11 @@
             // Make sure to preventDefault on a submit event.
             event.preventDefault();
 
-
             // Getting the value from the localStorage
             customerName = $("#addcustomer").val().trim();
             var newCustomer = {
                 name: customerName,
             };
-
 
             // Send the POST request.
             $.ajax("/api/customers", {
@@ -171,36 +156,35 @@
                 data: newCustomer
             }).then(
                 function (data) {
-                    console.log("created new customer");
-        
+
                     // Clear the previous cookie by setting it it equal to nothing and its expiration date to a past time
                     document.cookie = "customername=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
                     document.cookie = "customerid=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
+
                     // Store the username as a cookie using "document.cookie"
-                    console.log(data.customer_name, data.id)
                     document.cookie = "customername=" + data.customer_name + ";";
                     document.cookie = "customerid=" + data.id + ";";
-                   
+
                     location.reload();
-                   
+
                 });
         });
 
-   // NOTE: In order to modify cookies, we must access them over a secure connection e.i = https, localhost:
-    // Needed to create this function to readCookies. Essentially it splits up the cookie list
-    // See the working app at http://cookie-example-rcb.herokuapp.com/ or by opening with Firefox or Safari
-    function readCookie(name) {
-      var nameEQ = name + "=";
-      var ca = document.cookie.split(";");
-      for (var i = 0; i < ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0) === " ") c = c.substring(1, c.length);
-        if (c.indexOf(nameEQ) === 0) {
-          return c.substring(nameEQ.length, c.length);
+        // NOTE: In order to modify cookies, we must access them over a secure connection e.i = https, localhost:
+        // Needed to create this function to readCookies. Essentially it splits up the cookie list
+        // See the working app at http://cookie-example-rcb.herokuapp.com/ or by opening with Firefox or Safari
+        function readCookie(name) {
+            var nameEQ = name + "=";
+            var ca = document.cookie.split(";");
+            for (var i = 0; i < ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) === " ") c = c.substring(1, c.length);
+                if (c.indexOf(nameEQ) === 0) {
+                    return c.substring(nameEQ.length, c.length);
+                }
+            }
+            return null;
         }
-      }
-      return null;
-    }
 
     });
 
