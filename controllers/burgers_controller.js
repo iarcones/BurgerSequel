@@ -17,6 +17,8 @@ router.get("/", function (req, res) {
             ['burger_counter', 'DESC']
         ],
     }).then(function (dbBurger) {
+        console.log("dbBurger")
+        console.log(dbBurger)
         var hbsObject = {
             burgers: dbBurger
         };
